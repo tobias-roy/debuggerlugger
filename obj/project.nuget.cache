@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6KFjN9rDYTGrz1cTJD5gJcVRM3AlzYSvA6WJiRhHwn15ORxFFqjxRp7t4C1k1SXtOQ09TAIBQ5qbuhLw+KxrzQ==",
+  "success": true,
+  "projectFilePath": "/Users/tobiasroy/Desktop/waste/RapFinands/RapFinands.csproj",
+  "expectedPackageFiles": [
+    "/Users/tobiasroy/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
