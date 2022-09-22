@@ -18,21 +18,22 @@ namespace Rap_Finands
         public static float belob;
         static void Main(string[] args)
         {
+            Console.Clear(); //Clear before writing useful stuff
             Console.WriteLine("Henter alt kontodata");
             
             hent();
-            if (konti.Count == 0) {
-                var k = lavKonto();
-                k.ejer = "Ejvind Møller";
-                konti.Add(k);
+            // if (konti.Count == 0) {
+            //     var k = lavKonto();
+            //     k.ejer = "Ejvind Møller";
+            //     konti.Add(k);
 
-                GemTrans(k,"Opsparing",100);
-                GemTrans(konti[0],"Vandt i klasselotteriet",1000);
-                GemTrans(konti[0],"Hævet til Petuniaer",-50);
+            //     GemTrans(k,"Opsparing",100);
+            //     GemTrans(konti[0],"Vandt i klasselotteriet",1000);
+            //     GemTrans(konti[0],"Hævet til Petuniaer",-50);
                 
-                gem();
-            } else {
-            }
+            //     gem();
+            // } else {
+            // }
             dos_start();
             
         }
@@ -43,20 +44,22 @@ namespace Rap_Finands
             bool blivVedogved = true;
             while (blivVedogved) {
                 Console.WriteLine("1. Opret ny konto");
-                Console.WriteLine("2. Hæv/sæt ind");
+                Console.WriteLine("2̶.̶ ̶H̶æ̶v̶/̶s̶æ̶t̶ ̶i̶n̶d̶"); //Udstreget da det ikke fungere som det burde
                 Console.WriteLine("3. Se en oversigt");
                 Console.WriteLine("0. Afslut");
 
                 Console.Write(">");
                 string valg1 = Console.ReadLine();
-                int valg = int.Parse(valg1+1);
+                //int valg = int.Parse(valg1+1); Her er en fejl. Du vælger det du vil og der bliver lagt +1 til, altså dit valg vil altid være noget andet.
+                int valg = int.Parse(valg1); //Rettet - Jeg er med på den smider en unhandled hvis ikke dit input er et tal.
                 
                 switch (valg) {
                     case 1:
                         dos_opretKonto();
                         break;
                     case 2:
-                        dos_opretTransaktion(dos_findKonto());
+                        Console.WriteLine("Midlertidig ude af drift");
+                        //dos_opretTransaktion(dos_findKonto()); - Midlertidigt fjernet da det ikke hæver/indsætter penge på en konto
                         break;
                     case 3:
                         dos_udskrivKonto(dos_findKonto());
@@ -68,7 +71,6 @@ namespace Rap_Finands
                         Console.WriteLine("UGYLDIGT VALGT!!");
                         Console.ReadKey();
                         break;
-
                 }
             }
             Console.Clear();
@@ -135,15 +137,34 @@ namespace Rap_Finands
             }
         }
         static void dos_udskrivKonto(Konto k) {
-            Console.WriteLine("Konto for "+k.ejer+": "+k.registreringsnr+" "+k.kontonr);
-            Console.WriteLine("================");
-            Console.WriteLine("Tekst\t\t\t\tBeløb\t\tSaldo");
+            //Hele den her funktion er lavet om for at udskrive det i korrekt formatering.
+            string header = "Konto for "+k.ejer+": "+k.registreringsnr+" "+k.kontonr;
+            Console.WriteLine(header);
+
+            string linebreak = "=";
+            Console.WriteLine(linebreak.PadRight(15, '='));
+            
+            int textpadlength = 0;
+            int amountpadlength = 0;
+            foreach (Transaktion t in k.transaktioner)
+            {
+                if(textpadlength < t.tekst.Length + 5){
+                    textpadlength = t.tekst.Length + 5;
+                }
+                if(amountpadlength < t.amount.ToString().Length + 5){
+                    amountpadlength = t.amount.ToString().Length + 5;
+                }
+            }
+
+            string subheader = "Tekst".PadRight(textpadlength) + "Beløb".PadRight(amountpadlength) + "Saldo";
+            Console.WriteLine(subheader);
+
             foreach (Transaktion t in k.transaktioner) {
-                Console.Write(t.tekst+"\t\t\t\t");
-                Console.Write(t.amount+"\t\t");
+                Console.Write(t.tekst.PadRight(textpadlength, ' '));
+                Console.Write(t.amount.ToString().PadRight(amountpadlength, ' '));
                 Console.WriteLine(t.saldo);
             }
-            Console.WriteLine("================\n");
+            Console.WriteLine(linebreak.PadRight(15, '='));
 
         }
         
@@ -173,11 +194,12 @@ namespace Rap_Finands
         public static void gem() 
         {
             File.WriteAllText(datafil,JsonConvert.SerializeObject(konti));
-            File.Delete(datafil); //Fjern debug fil
+            //File.Delete(datafil); //Fjernede datafilen
         }
         public static void hent()
         {
-            datafil = "debug_bank.json"; //Debug - brug en anden datafil til debug ~Konrad
+          //  datafil = "debug_bank.json"; //Forkert datafil
+            datafil = "bank.json"; //Henter nu korrekt datafil
             if (File.Exists(datafil)) {
                 string json = File.ReadAllText(datafil);
                 konti = JsonConvert.DeserializeObject<List<Konto>>(json);
